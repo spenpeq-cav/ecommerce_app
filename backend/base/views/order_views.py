@@ -11,7 +11,7 @@ from rest_framework import status
 
 
 @api_view(['POST'])
-@permission_classes(['IsAuthenticated'])
+@permission_classes([IsAuthenticated])
 def addOrderItems(request):
     user = request.user
     data = request.data
@@ -51,7 +51,7 @@ def addOrderItems(request):
                 name=product.name,
                 qty=i['qty'],
                 price=i['price'],
-                img=product.image.url,
+                image=product.image.url,
             )
 
             # (4) Update stock
@@ -59,6 +59,6 @@ def addOrderItems(request):
             product.countInStock -= item.qty
             product.save()
 
-    serializer = OrderSerializer(order, many=True)
+        serializer = OrderSerializer(order, many=False)
 
-    return Response(serializer.data)
+        return Response(serializer.data)
