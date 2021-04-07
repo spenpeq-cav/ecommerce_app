@@ -91,7 +91,7 @@ export const orderPayReducer = (state = {}, action) => {
             }
 
         case ORDER_PAY_RESET:
-            return{}
+            return {}
         
         default:
             return state
