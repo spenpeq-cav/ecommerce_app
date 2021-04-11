@@ -1,6 +1,7 @@
 import React from 'react'
+import axios from 'axios'
 import { useState, useEffect} from 'react'
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
+import { Button, Row, Col, ListGroup, Image, Card, Collapse } from 'react-bootstrap'
 import {Link} from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { PayPalButton } from 'react-paypal-button-v2'
@@ -14,6 +15,7 @@ function OrderScreen({ match, history }){
     const dispatch = useDispatch()
 
     const[sdkReady, setSdkReady] = useState(false)
+    const[paypalId, setPaypalId] = useState('')
 
     const orderDetails = useSelector(state => state.orderDetails)
     const {order, error, loading} = orderDetails
@@ -31,10 +33,17 @@ function OrderScreen({ match, history }){
         order.itemsPrice = order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0).toFixed(2)
     }
     
+    const fetchPayPalClientId = async() => {
+        const res = await axios.get('/api/orders/paypalid-sb/')
+        const data = res.data
+        setPaypalId(data)
+    }
+    
     const addPayPalScript = () => {
+        const client_id = paypalId.client_id
         const script = document.createElement('script')
         script.type = 'text/javascript'
-        script.src = 'https://www.paypal.com/sdk/js?client-id=' + process.env.REACT_APP_PAYPAL_SANDBOX_CLIENT_ID
+        script.src = 'https://www.paypal.com/sdk/js?client-id=' + client_id
         script.async = true
         script.onload = () => {
             setSdkReady(true)
@@ -44,6 +53,9 @@ function OrderScreen({ match, history }){
 
 
     useEffect(() => {
+        if(paypalId === ''){
+            fetchPayPalClientId()
+        }
         if(!userInfo) {
             history.push('/login')
         }

@@ -10,6 +10,9 @@ from base.serializers import ProductSerializer, OrderSerializer
 from rest_framework import status
 from datetime import datetime
 
+from decouple import config
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addOrderItems(request):
@@ -125,3 +128,10 @@ def updateOrderToDelivered(request, pk):
     order.save()
     
     return Response('Order was delivered')
+
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+def getPaypalSandboxClientId(request):
+    client_id = config('PAYPAL_SANDBOX_CLIENT_ID')
+    return Response({'client_id': client_id})
