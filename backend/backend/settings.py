@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'corsheaders',
+    'storages',
 
     'base.apps.BaseConfig',
 ]
@@ -186,3 +187,13 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = 'static/images'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+#AWS S3 Bucket for static files, (boto3 django-storages)
+
+AWS_QUERYSTRING_AUTH = False
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
